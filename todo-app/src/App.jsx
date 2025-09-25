@@ -1,12 +1,27 @@
 import { useState } from "react"
 import Todo from "./components/Todo/todo"
+import Stats from "./components/stats/Stats"
 
 function App() {
   const [TodoName, setTodoName] = useState("")
   const [todos, setTodos] = useState([])
   const handleAdd = () => {
-    setTodos((todosOld) => [TodoName, ...todosOld])
+    const newTodo ={
+      id: crypto.randomUUID(),
+      name: TodoName,
+      status: false 
+    }
+    setTodos((todosOld) => [newTodo, ...todosOld])
   }
+  const handleDelete = (id) => {
+    setTodos((todos) => todos.filter((todo) => todo.id !== id))
+
+  }
+  const handleToggle = (id) => {
+    setTodos((todos) => todos.map((todo) => todo.id === id ? 
+    {...todo, status: !todo.status} : todo ))
+  }
+  
 
   return (
     <div className="container">
@@ -36,7 +51,11 @@ function App() {
       </div>
 
       <div className="todo-list">
-        {todos.map((el) => <Todo />)}
+        {todos.map((el) => <Todo  {...el} handleDelete={handleDelete}
+         key={el.id} />)}
+
+
+        <Stats todos={todos}/>
 
       </div>
     </div>
@@ -44,3 +63,5 @@ function App() {
 }
 
 export default App
+
+
