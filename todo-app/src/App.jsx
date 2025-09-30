@@ -1,10 +1,26 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Todo from "./components/Todo/todo"
 import Stats from "./components/stats/Stats"
+import Filters from "./components/Filters/Filters"
 
 function App() {
   const [TodoName, setTodoName] = useState("")
-  const [todos, setTodos] = useState([])
+  const [todos, setTodos] = useState(() => {
+    const savedTodos = localStorage.getItem("todos")
+    return savedTodos ? JSON.parse(savedTodos) : []
+  })
+const [shownTodos, setShownTodos] = useState(todos)
+const [filter, setFilter ] = useState("all")
+
+useEffect(() => {
+  setShownTodos(todos)
+}, [todos])
+
+
+  useEffect(() => {
+localStorage.setItem("todos", JSON.stringify(todos))
+  }, [todos])
+
   const handleAdd = () => {
     const newTodo ={
       id: crypto.randomUUID(),
@@ -44,14 +60,10 @@ function App() {
         </div>
       </div>
 
-      <div className="filters">
-        <button className="filter-btn active" data-filter="all">Все</button>
-        <button className="filter-btn" data-filter="active">Активные</button>
-        <button className="filter-btn" data-filter="completed">Завершенные</button>
-      </div>
+     <Filters filter={ filter} setFilter={setFilter} />
 
       <div className="todo-list">
-        {todos.map((el) => <Todo  {...el} handleDelete={handleDelete}
+        {shownTodos.map((el) => <Todo  {...el} handleToggle={handleToggle} handleDelete={handleDelete}
          key={el.id} />)}
 
 
