@@ -9,23 +9,23 @@ function App() {
     const savedTodos = localStorage.getItem("todos")
     return savedTodos ? JSON.parse(savedTodos) : []
   })
-const [shownTodos, setShownTodos] = useState(todos)
-const [filter, setFilter ] = useState("all")
+  const [shownTodos, setShownTodos] = useState(todos)
+  const [filter, setFilter] = useState("all")
 
-useEffect(() => {
-  setShownTodos(todos)
-}, [todos])
+  useEffect(() => {
+    setShownTodos(todos)
+  }, [todos])
 
 
   useEffect(() => {
-localStorage.setItem("todos", JSON.stringify(todos))
+    localStorage.setItem("todos", JSON.stringify(todos))
   }, [todos])
 
   const handleAdd = () => {
-    const newTodo ={
+    const newTodo = {
       id: crypto.randomUUID(),
       name: TodoName,
-      status: false 
+      status: false
     }
     setTodos((todosOld) => [newTodo, ...todosOld])
   }
@@ -34,12 +34,32 @@ localStorage.setItem("todos", JSON.stringify(todos))
 
   }
   const handleToggle = (id) => {
-    setTodos((todos) => todos.map((todo) => todo.id === id ? 
-    {...todo, status: !todo.status} : todo ))
+    setTodos((todos) => todos.map((todo) => todo.id === id ?
+      { ...todo, status: !todo.status } : todo))
   }
-  
+
+  const FilterButtons = ({ currentFilter, onFilterChange }) => {
+  const filters = [
+    { key: 'all', label: 'Все' },
+    { key: 'active', label: 'Активные' },
+    { key: 'completed', label: 'Завершенные' }
+  ];
+
 
   return (
+    <div className="Filters">
+            {filters.map(filter => (
+              <button
+          key={filter.key}
+          onClick={() => onFilterChange(filter.key)}
+          className={`filter-button ${currentFilter === filter.key ? 'active' : ''}`}
+        >
+          {filter.label}
+        </button>
+  ))}
+
+
+    
     <div className="container">
 
       <div className="header">
@@ -60,15 +80,14 @@ localStorage.setItem("todos", JSON.stringify(todos))
         </div>
       </div>
 
-     <Filters filter={ filter} setFilter={setFilter} />
+      <Filters filter={filter} setFilter={setFilter} />
 
       <div className="todo-list">
         {shownTodos.map((el) => <Todo  {...el} handleToggle={handleToggle} handleDelete={handleDelete}
-         key={el.id} />)}
-
-
-        <Stats todos={todos}/>
-
+          key={el.id} />)}
+        <div className="stats">
+          <Stats todos={todos} />
+        </div>
       </div>
     </div>
   )

@@ -1,5 +1,7 @@
+import FilterButton from "../filterButton/FilterBurron"
+
 const Filters = () => {
-    const FilretButtons = [
+    const FilterButtons = [
         {
         type: "all",
         name: "Все"
@@ -12,14 +14,16 @@ const Filters = () => {
             type: "completed",
             name: "Завершенные"
         }
-    ]}
+    ]
     return (
         <div className="filters">
-            <button className="filter-btn active" data-filter="all">Все</button>
-            <button className="filter-btn" data-filter="active">Активные</button>
-            <button className="filter-btn" data-filter="completed">Завершенные</button>
+            {
+                FilterButtons.map ((button) => (
+                <FilterButton type={button.type}>
+                    {button.name}
+                    </FilterButton>
+                ))}
         </div>
     )
 }
-
 export default Filters
